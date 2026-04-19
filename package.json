@@ -1,6 +1,6 @@
 {
   "name": "vitepress-daisyui-theme",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A VitePress theme skinned with DaisyUI 5 (on Tailwind CSS 4). Doc + page layouts, full DefaultTheme.Config compatibility, built-in local search, i18n, breadcrumb, team page, math.",
   "homepage": "https://github.com/ideamans/vitepress-daisyui-theme",
   "repository": {

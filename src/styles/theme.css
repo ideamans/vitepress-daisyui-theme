@@ -47,17 +47,15 @@ html {
 .prose :is(h1, h2, h3, h4, h5, h6) { position: relative; }
 .prose .header-anchor {
   position: absolute;
-  left: -1.25rem;
   top: 0;
-  bottom: 0;
-  display: inline-flex;
-  align-items: center;
-  padding: 0 0.35rem;
-  color: color-mix(in oklab, currentColor 35%, transparent);
+  left: 0;
+  margin-left: -0.95em;          /* em-based: scales with heading size */
+  color: color-mix(in oklab, currentColor 40%, transparent);
   text-decoration: none;
   opacity: 0;
-  transition: opacity 0.15s;
+  transition: opacity 0.15s, color 0.15s;
   font-weight: 500;
+  user-select: none;
 }
 .prose .header-anchor::before { content: '#'; }
 .prose :is(h1, h2, h3, h4, h5, h6):hover .header-anchor,
