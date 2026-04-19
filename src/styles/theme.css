@@ -1,0 +1,379 @@
+@import 'tailwindcss';
+
+@plugin 'daisyui' {
+  themes: light --default, dark --prefersdark;
+}
+
+/* Scan the theme package and the consuming project. Vite + @tailwindcss/vite
+   auto-discovers imported sources, but these make detection robust when the
+   package is linked via pnpm workspace or installed from node_modules. */
+@source '../../src/**/*.{vue,ts}';
+@source '../**/*.{vue,ts}';
+
+/* Smooth-scroll for in-page TOC anchor clicks */
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 5rem;
+}
+
+/* ---------- Markdown body (.prose) ---------- */
+/* Lightweight Tailwind-less typography baked with utility-style rules so we
+   don't depend on @tailwindcss/typography. Mirrors fumadocs prose density. */
+.prose {
+  color: var(--color-base-content, currentColor);
+  line-height: 1.7;
+  font-size: 1rem;
+}
+.prose > :first-child { margin-top: 0; }
+.prose > :last-child { margin-bottom: 0; }
+
+.prose h1,
+.prose h2,
+.prose h3,
+.prose h4,
+.prose h5,
+.prose h6 {
+  font-weight: 700;
+  line-height: 1.25;
+  scroll-margin-top: 5rem;
+  color: var(--color-base-content);
+}
+.prose h1 { font-size: 2.25rem; margin: 0 0 1.5rem; letter-spacing: -0.01em; }
+.prose h2 { font-size: 1.5rem; margin: 2.5rem 0 1rem; padding-bottom: 0.35rem; border-bottom: 1px solid color-mix(in oklab, currentColor 12%, transparent); }
+.prose h3 { font-size: 1.25rem; margin: 2rem 0 0.75rem; }
+.prose h4 { font-size: 1.1rem; margin: 1.5rem 0 0.5rem; }
+
+/* Header anchor link (markdown-it-anchor adds <a class="header-anchor" href="#slug">&#8203;</a>) */
+.prose :is(h1, h2, h3, h4, h5, h6) { position: relative; }
+.prose .header-anchor {
+  position: absolute;
+  left: -1.25rem;
+  top: 0;
+  bottom: 0;
+  display: inline-flex;
+  align-items: center;
+  padding: 0 0.35rem;
+  color: color-mix(in oklab, currentColor 35%, transparent);
+  text-decoration: none;
+  opacity: 0;
+  transition: opacity 0.15s;
+  font-weight: 500;
+}
+.prose .header-anchor::before { content: '#'; }
+.prose :is(h1, h2, h3, h4, h5, h6):hover .header-anchor,
+.prose .header-anchor:focus { opacity: 1; }
+.prose .header-anchor:hover { color: var(--color-primary); }
+
+.prose p { margin: 1rem 0; }
+
+.prose a {
+  color: var(--color-primary);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+}
+.prose a:hover { text-decoration-thickness: 2px; }
+
+/* External-link marker (opt-in via themeConfig.externalLinkIcon = true) */
+.prose.external-link-icon a[target='_blank']:not(.header-anchor)::after {
+  content: '';
+  display: inline-block;
+  width: 0.7em;
+  height: 0.7em;
+  margin-left: 0.2em;
+  vertical-align: baseline;
+  background-color: currentColor;
+  opacity: 0.6;
+  -webkit-mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2'><path stroke-linecap='round' stroke-linejoin='round' d='M14 3h7v7M10 14L21 3M19 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h6'/></svg>") no-repeat center / contain;
+  mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2'><path stroke-linecap='round' stroke-linejoin='round' d='M14 3h7v7M10 14L21 3M19 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h6'/></svg>") no-repeat center / contain;
+}
+
+.prose strong { font-weight: 600; }
+
+.prose ul,
+.prose ol { margin: 1rem 0; padding-left: 1.5rem; }
+.prose ul { list-style: disc; }
+.prose ol { list-style: decimal; }
+.prose li { margin: 0.35rem 0; }
+.prose li > ul,
+.prose li > ol { margin: 0.35rem 0; }
+
+.prose blockquote {
+  margin: 1.25rem 0;
+  padding: 0.5rem 1rem;
+  border-left: 4px solid color-mix(in oklab, currentColor 20%, transparent);
+  color: color-mix(in oklab, currentColor 70%, transparent);
+  font-style: italic;
+}
+
+.prose hr {
+  margin: 2rem 0;
+  border: 0;
+  border-top: 1px solid color-mix(in oklab, currentColor 12%, transparent);
+}
+
+.prose table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.25rem 0;
+  font-size: 0.925rem;
+}
+.prose th,
+.prose td {
+  padding: 0.6rem 0.8rem;
+  border: 1px solid color-mix(in oklab, currentColor 15%, transparent);
+  text-align: left;
+}
+.prose th { background: color-mix(in oklab, currentColor 5%, transparent); font-weight: 600; }
+
+/* Inline code */
+.prose :not(pre) > code {
+  padding: 0.15rem 0.4rem;
+  border-radius: 0.3rem;
+  font-size: 0.88em;
+  background: color-mix(in oklab, currentColor 10%, transparent);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+}
+
+/* VitePress wraps fenced code in div.language-xxx > pre.shiki > code (Shiki dual-theme). */
+.prose div[class*='language-'] {
+  position: relative;
+  margin: 1.25rem 0;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  background: var(--shiki-light-bg, #f6f8fa);
+}
+html.dark .prose div[class*='language-'] {
+  background: var(--shiki-dark-bg, #24292e);
+}
+.prose div[class*='language-'] pre {
+  margin: 0;
+  padding: 1rem 1.25rem;
+  overflow-x: auto;
+  background: transparent !important;
+  font-size: 0.875rem;
+  line-height: 1.6;
+  color: #24292e;
+}
+html.dark .prose div[class*='language-'] pre { color: #e1e4e8; }
+.prose div[class*='language-'] code {
+  background: transparent;
+  padding: 0;
+  color: inherit;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+  display: block;
+  width: max-content;
+  min-width: 100%;
+}
+
+/* Shiki dual-theme: spans carry --shiki-light / --shiki-dark CSS variables.
+   Convert to actual color / weight / decoration based on html.dark. */
+html:not(.dark) .shiki span {
+  color: var(--shiki-light, inherit);
+  font-weight: var(--shiki-light-font-weight, inherit);
+  text-decoration: var(--shiki-light-text-decoration, inherit);
+}
+html.dark .shiki span {
+  color: var(--shiki-dark, inherit);
+  font-weight: var(--shiki-dark-font-weight, inherit);
+  text-decoration: var(--shiki-dark-text-decoration, inherit);
+}
+.shiki span { unicode-bidi: isolate; }
+
+/* Shiki per-line transformers */
+.prose div[class*='language-'] .line { display: inline-block; width: 100%; padding: 0 1.25rem; margin: 0 -1.25rem; }
+/* Line highlight ({1,3} and // [!code highlight]) */
+.prose div[class*='language-'] .line.highlighted {
+  background: color-mix(in oklab, white 8%, transparent);
+  box-shadow: inset 2px 0 0 var(--color-primary);
+}
+/* Error / warning notations (// [!code error|warning]) */
+.prose div[class*='language-'] .line.highlighted.error {
+  background: color-mix(in oklab, var(--color-error) 18%, transparent);
+  box-shadow: inset 2px 0 0 var(--color-error);
+}
+.prose div[class*='language-'] .line.highlighted.warning {
+  background: color-mix(in oklab, var(--color-warning) 18%, transparent);
+  box-shadow: inset 2px 0 0 var(--color-warning);
+}
+/* Diff notations (// [!code ++] / [!code --]) */
+.prose div[class*='language-'] .line.diff { position: relative; }
+.prose div[class*='language-'] .line.diff.add { background: color-mix(in oklab, var(--color-success) 15%, transparent); }
+.prose div[class*='language-'] .line.diff.remove {
+  background: color-mix(in oklab, var(--color-error) 15%, transparent);
+  opacity: 0.75;
+}
+.prose div[class*='language-'] .line.diff.add::before,
+.prose div[class*='language-'] .line.diff.remove::before {
+  position: absolute;
+  left: 0.4rem;
+  color: color-mix(in oklab, white 60%, transparent);
+}
+.prose div[class*='language-'] .line.diff.add::before { content: '+'; color: var(--color-success); }
+.prose div[class*='language-'] .line.diff.remove::before { content: '-'; color: var(--color-error); }
+/* Focus notations (// [!code focus]) */
+.prose div[class*='language-'].has-focused-lines .line:not(.has-focus) { filter: blur(0.08rem); transition: filter 0.2s; opacity: 0.7; }
+.prose div[class*='language-'].has-focused-lines:hover .line:not(.has-focus) { filter: none; opacity: 1; }
+
+/* Line numbers (:line-numbers on fence) */
+.prose div[class*='language-'].line-numbers-mode { padding-left: 3.25rem; }
+.prose div[class*='language-'].line-numbers-mode .line-numbers-wrapper {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 3.25rem;
+  padding: 1rem 0;
+  text-align: right;
+  font-size: 0.875rem;
+  line-height: 1.6;
+  font-family: ui-monospace, SFMono-Regular, monospace;
+  color: color-mix(in oklab, white 35%, transparent);
+  border-right: 1px solid color-mix(in oklab, white 8%, transparent);
+  user-select: none;
+}
+.prose div[class*='language-'].line-numbers-mode .line-number { padding-right: 0.75rem; }
+.prose div[class*='language-'] > span.lang {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.75rem;
+  font-size: 0.7rem;
+  color: color-mix(in oklab, white 50%, transparent);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-family: ui-monospace, SFMono-Regular, monospace;
+}
+.prose div[class*='language-'] button.copy {
+  position: absolute;
+  top: 0.5rem;
+  right: 2.75rem;
+  padding: 0.2rem 0.55rem;
+  font-size: 0.7rem;
+  border-radius: 0.25rem;
+  background: color-mix(in oklab, white 10%, transparent);
+  color: color-mix(in oklab, white 70%, transparent);
+  border: 1px solid color-mix(in oklab, white 15%, transparent);
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.15s, background-color 0.15s, color 0.15s;
+  font-family: inherit;
+}
+.prose div[class*='language-']:hover button.copy,
+.prose div[class*='language-'] button.copy:focus { opacity: 1; }
+.prose div[class*='language-'] button.copy:hover {
+  background: color-mix(in oklab, white 20%, transparent);
+  color: white;
+}
+.prose div[class*='language-'] button.copy.copied {
+  color: var(--color-success);
+  border-color: var(--color-success);
+}
+.prose div[class*='language-'] button.copy::before { content: 'Copy'; }
+.prose div[class*='language-'] button.copy.copied::before { content: 'Copied!'; }
+
+/* Code groups (::: code-group) */
+.prose .vp-code-group {
+  margin: 1.25rem 0;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  background: #0b1020;
+}
+.prose .vp-code-group .tabs {
+  display: flex;
+  overflow-x: auto;
+  padding: 0 0.5rem;
+  background: color-mix(in oklab, white 4%, #0b1020);
+  border-bottom: 1px solid color-mix(in oklab, white 6%, transparent);
+}
+.prose .vp-code-group .tabs input[type='radio'] {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+.prose .vp-code-group .tabs label {
+  padding: 0.55rem 0.9rem;
+  font-size: 0.8rem;
+  color: color-mix(in oklab, white 60%, transparent);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  white-space: nowrap;
+}
+.prose .vp-code-group .tabs label:hover { color: color-mix(in oklab, white 85%, transparent); }
+.prose .vp-code-group .tabs input:checked + label {
+  color: white;
+  border-bottom-color: var(--color-primary);
+}
+.prose .vp-code-group .blocks > div[class*='language-'] { display: none; margin: 0; border-radius: 0; }
+.prose .vp-code-group .blocks > div[class*='language-'].active { display: block; }
+
+/* VitePress custom containers (::: tip / info / warning / danger) */
+.prose .custom-block {
+  margin: 1.25rem 0;
+  padding: 0.75rem 1rem;
+  border-left: 4px solid;
+  border-radius: 0 0.375rem 0.375rem 0;
+  font-size: 0.925rem;
+}
+.prose .custom-block .custom-block-title { font-weight: 600; margin-bottom: 0.25rem; }
+.prose .custom-block.tip {
+  border-color: var(--color-success);
+  background: color-mix(in oklab, var(--color-success) 10%, transparent);
+}
+.prose .custom-block.info,
+.prose .custom-block.note {
+  border-color: var(--color-info);
+  background: color-mix(in oklab, var(--color-info) 10%, transparent);
+}
+.prose .custom-block.important {
+  border-color: var(--color-primary);
+  background: color-mix(in oklab, var(--color-primary) 10%, transparent);
+}
+.prose .custom-block.warning,
+.prose .custom-block.caution {
+  border-color: var(--color-warning);
+  background: color-mix(in oklab, var(--color-warning) 10%, transparent);
+}
+.prose .custom-block.danger {
+  border-color: var(--color-error);
+  background: color-mix(in oklab, var(--color-error) 10%, transparent);
+}
+/* ::: details — collapsible (emits <details>) */
+.prose details.custom-block {
+  padding: 0.75rem 1rem;
+  border-left: 4px solid color-mix(in oklab, currentColor 30%, transparent);
+  background: color-mix(in oklab, currentColor 4%, transparent);
+  border-radius: 0 0.375rem 0.375rem 0;
+}
+.prose details.custom-block > summary {
+  cursor: pointer;
+  font-weight: 600;
+  list-style: none;
+}
+.prose details.custom-block > summary::-webkit-details-marker { display: none; }
+.prose details.custom-block > summary::before {
+  content: '▸';
+  display: inline-block;
+  margin-right: 0.4rem;
+  transition: transform 0.15s;
+}
+.prose details.custom-block[open] > summary::before { transform: rotate(90deg); }
+
+.prose img { max-width: 100%; height: auto; border-radius: 0.5rem; margin: 1.25rem 0; }
+
+/* [[toc]] output from @mdit-vue/plugin-toc */
+.prose .table-of-contents {
+  margin: 1.5rem 0;
+  padding: 1rem 1.25rem;
+  background: color-mix(in oklab, currentColor 4%, transparent);
+  border-left: 3px solid var(--color-primary);
+  border-radius: 0 0.375rem 0.375rem 0;
+  font-size: 0.925rem;
+}
+.prose .table-of-contents ul { margin: 0.25rem 0; padding-left: 1.2rem; list-style: disc; }
+.prose .table-of-contents > ul { padding-left: 1rem; }
+.prose .table-of-contents a { text-decoration: none; }
+.prose .table-of-contents a:hover { text-decoration: underline; }
+
+/* daisyui's dropdown summary marker cleanup */
+details.dropdown > summary::-webkit-details-marker { display: none; }
+details.dropdown > summary { list-style: none; }

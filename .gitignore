@@ -1,0 +1,15 @@
+# Dependencies
+node_modules
+
+# macOS
+.DS_Store
+
+# VitePress build output / cache (match at any depth)
+**/.vitepress/cache
+**/.vitepress/dist
+dist
+
+# Editor / OS
+.idea
+.vscode
+*.log
