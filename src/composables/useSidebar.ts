@@ -73,11 +73,23 @@ export function usePrevNext() {
     const idx = flat.value.findIndex((it) => normalize(it.link || '').replace(/^\//, '') === current || normalize(it.link || '') === '/' + current)
     const fmPrev = frontmatter.value.prev
     const fmNext = frontmatter.value.next
-    const prevItem = showPrev ? (idx > 0 ? flat.value[idx - 1] : undefined) : undefined
-    const nextItem = showNext ? (idx >= 0 && idx < flat.value.length - 1 ? flat.value[idx + 1] : undefined) : undefined
+    const prevRaw = showPrev ? (idx > 0 ? flat.value[idx - 1] : undefined) : undefined
+    const nextRaw = showNext ? (idx >= 0 && idx < flat.value.length - 1 ? flat.value[idx + 1] : undefined) : undefined
+    const fromSidebar = (it?: SidebarItem) =>
+      it ? { text: it.docFooterText ?? it.text ?? '', link: it.link ?? '' } : undefined
+    const resolveFm = (fm: any, fallback?: { text: string; link: string }) => {
+      if (fm === false) return undefined
+      if (typeof fm === 'string') return fallback ? { ...fallback, text: fm } : undefined
+      if (fm && typeof fm === 'object') return { text: fm.text ?? fallback?.text ?? '', link: fm.link ?? fallback?.link ?? '' }
+      return fallback
+    }
+    const prevLabel = typeof df.prev === 'string' ? df.prev : undefined
+    const nextLabel = typeof df.next === 'string' ? df.next : undefined
     return {
-      prev: fmPrev === false ? undefined : fmPrev || prevItem,
-      next: fmNext === false ? undefined : fmNext || nextItem
+      prev: resolveFm(fmPrev, fromSidebar(prevRaw)),
+      next: resolveFm(fmNext, fromSidebar(nextRaw)),
+      prevLabel,
+      nextLabel
     }
   })
 }

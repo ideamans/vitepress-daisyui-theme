@@ -11,11 +11,24 @@ export default withTheme({
   themeConfig: {
     siteTitle: 'TW Theme',
     nav: [
-      { text: 'Guide', link: '/guide/getting-started' },
-      { text: 'Markdown Demo', link: '/guide/markdown-demo' },
-      { text: 'Math', link: '/guide/math' },
-      { text: 'Team', link: '/team' },
-      { text: 'About', link: '/about' },
+      {
+        text: 'Guide',
+        activeMatch: '^/guide/',
+        items: [
+          { text: 'Getting Started', link: '/guide/getting-started' },
+          { text: 'Markdown Demo', link: '/guide/markdown-demo' },
+          { text: 'Math', link: '/guide/math' }
+        ]
+      },
+      {
+        text: 'Examples',
+        items: [
+          { text: 'Home (VPHome)', link: '/' },
+          { text: 'Home (Freeform)', link: '/landing' },
+          { text: 'Team page', link: '/team' },
+          { text: 'About (doc layout)', link: '/about' }
+        ]
+      },
       {
         text: 'Resources',
         items: [
@@ -41,7 +54,21 @@ export default withTheme({
           collapsed: true,
           items: [
             { text: 'Doc layout', link: '/guide/getting-started' },
-            { text: 'Page layout', link: '/about' }
+            { text: 'Page layout', link: '/about' },
+            {
+              text: 'Nested group',
+              collapsed: false,
+              items: [
+                { text: 'Markdown Demo', link: '/guide/markdown-demo' },
+                { text: 'Math', link: '/guide/math' },
+                {
+                  text: 'External',
+                  items: [
+                    { text: 'VitePress', link: 'https://vitepress.dev', target: '_blank', rel: 'noopener' }
+                  ]
+                }
+              ]
+            }
           ]
         }
       ]

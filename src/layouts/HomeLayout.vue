@@ -3,6 +3,8 @@ import { computed } from 'vue'
 import { Content, useData } from 'vitepress/client'
 import Header from '../components/Header.vue'
 import Footer from '../components/Footer.vue'
+import VPHero from '../components/VPHero.vue'
+import VPFeatures from '../components/VPFeatures.vue'
 import BackToTop from '../components/BackToTop.vue'
 import type { ThemeConfig } from '../types'
 
@@ -20,7 +22,11 @@ const pageClass = computed(() => (frontmatter.value.pageClass as string | undefi
     </a>
     <Header v-if="showNavbar" />
     <main id="main" class="flex-1">
-      <Content />
+      <VPHero v-if="frontmatter.hero" />
+      <VPFeatures v-if="frontmatter.features" />
+      <div class="max-w-6xl mx-auto px-6">
+        <Content />
+      </div>
     </main>
     <Footer v-if="showFooter" />
     <BackToTop />

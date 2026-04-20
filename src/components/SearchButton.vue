@@ -60,6 +60,8 @@ watch(open, (v) => {
       </svg>
     </button>
 
-    <SearchDialog v-if="open" @close="open = false" />
+    <Teleport to="body">
+      <SearchDialog v-if="open" @close="open = false" />
+    </Teleport>
   </template>
 </template>

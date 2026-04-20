@@ -3,9 +3,10 @@ import { computed } from 'vue'
 import { useData } from 'vitepress/client'
 import type { ThemeConfig } from '../types'
 
-const { theme, page, lang } = useData<ThemeConfig>()
+const { theme, page, lang, frontmatter } = useData<ThemeConfig>()
 
 const editUrl = computed(() => {
+  if (frontmatter.value.editLink === false) return undefined
   const cfg = theme.value.editLink
   if (!cfg) return undefined
   const { filePath, relativePath } = page.value
@@ -16,6 +17,7 @@ const editUrl = computed(() => {
 const editText = computed(() => theme.value.editLink?.text ?? 'Edit this page')
 
 const lastUpdated = computed(() => {
+  if (frontmatter.value.lastUpdated === false) return undefined
   const ts = page.value.lastUpdated
   if (!ts) return undefined
   const fmt = theme.value.lastUpdated?.formatOptions
@@ -31,7 +33,9 @@ const lastUpdated = computed(() => {
   }
 })
 
-const lastUpdatedText = computed(() => theme.value.lastUpdated?.text ?? 'Last updated')
+const lastUpdatedText = computed(
+  () => theme.value.lastUpdated?.text ?? (theme.value as any).lastUpdatedText ?? 'Last updated'
+)
 
 const visible = computed(() => !!editUrl.value || !!lastUpdated.value)
 </script>

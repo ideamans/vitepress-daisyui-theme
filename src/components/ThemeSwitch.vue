@@ -20,6 +20,7 @@ function toggle() {
   <button
     class="btn btn-ghost btn-sm btn-square"
     :aria-label="ariaLabel"
+    :title="theme.darkModeSwitchLabel ?? ariaLabel"
     @click="toggle"
   >
     <svg v-if="isDark" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">

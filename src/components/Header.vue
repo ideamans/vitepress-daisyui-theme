@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
-import { useData } from 'vitepress/client'
+import { useData, useRoute } from 'vitepress/client'
 import ThemeSwitch from './ThemeSwitch.vue'
 import SocialLinks from './SocialLinks.vue'
 import LangSwitch from './LangSwitch.vue'
@@ -8,6 +8,7 @@ import SearchButton from './SearchButton.vue'
 import type { NavItem, ThemeConfig } from '../types'
 
 const { site, theme, isDark } = useData<ThemeConfig>()
+const route = useRoute()
 
 const siteTitle = computed(() => {
   const t = theme.value.siteTitle
@@ -25,8 +26,29 @@ const logo = computed(() => {
   return undefined
 })
 
+const logoLink = computed(() => {
+  const ll = theme.value.logoLink
+  if (!ll) return { href: '/' }
+  if (typeof ll === 'string') return { href: ll }
+  return { href: ll.link ?? '/', rel: ll.rel, target: ll.target }
+})
+
+function isExternal(url: string): boolean {
+  return /^(https?:)?\/\//.test(url) || url.startsWith('mailto:') || url.startsWith('tel:')
+}
+
+function showExternalIcon(item: NavItem): boolean {
+  if ((item as any).noIcon) return false
+  const link = linkOf(item)
+  return !!link && isExternal(link)
+}
+
 function hasChildren(item: NavItem): item is Extract<NavItem, { items: any }> {
   return 'items' in item && Array.isArray((item as any).items)
+}
+
+function isComponent(item: NavItem): item is { component: string; props?: Record<string, any> } {
+  return !!(item as any).component && typeof (item as any).component === 'string'
 }
 
 function linkOf(item: NavItem): string | undefined {
@@ -36,6 +58,42 @@ function linkOf(item: NavItem): string | undefined {
 
 function textOf(item: NavItem): string {
   return 'text' in item && item.text ? item.text : ''
+}
+
+function normalizePath(p: string): string {
+  return p.replace(/\.html$/, '').replace(/index$/, '').replace(/\/$/, '') || '/'
+}
+
+function matchesRoute(item: NavItem): boolean {
+  const current = normalizePath(route.path)
+  const am = (item as any).activeMatch as string | undefined
+  if (am) {
+    try {
+      return new RegExp(am).test(route.path)
+    } catch {
+      return false
+    }
+  }
+  const link = linkOf(item)
+  if (link && !/^https?:/i.test(link)) {
+    return normalizePath(link) === current
+  }
+  if (hasChildren(item)) {
+    return (item as any).items.some((sub: any) => {
+      if (sub.activeMatch) {
+        try {
+          return new RegExp(sub.activeMatch).test(route.path)
+        } catch {
+          return false
+        }
+      }
+      if (sub.link && !/^https?:/i.test(sub.link)) {
+        return normalizePath(sub.link) === current || current.startsWith(normalizePath(sub.link) + '/')
+      }
+      return false
+    })
+  }
+  return false
 }
 
 const mobileOpen = ref(false)
@@ -54,14 +112,27 @@ const mobileOpen = ref(false)
             <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
           </svg>
         </button>
-        <a href="/" class="flex items-center gap-2 font-semibold text-base-content hover:opacity-80">
+        <a
+          :href="logoLink.href"
+          :rel="logoLink.rel"
+          :target="logoLink.target"
+          class="flex items-center gap-2 font-semibold text-base-content hover:opacity-80"
+        >
           <img v-if="logo" :src="logo.src" :alt="logo.alt" class="h-7 w-auto" />
           <span v-if="siteTitle">{{ siteTitle }}</span>
         </a>
         <nav class="hidden md:flex items-center gap-1 ml-4">
           <template v-for="(item, i) in nav" :key="i">
-            <details v-if="hasChildren(item)" class="dropdown">
-              <summary class="btn btn-ghost btn-sm font-normal">{{ textOf(item) }}</summary>
+            <component
+              v-if="isComponent(item)"
+              :is="(item as any).component"
+              v-bind="(item as any).props"
+            />
+            <details v-else-if="hasChildren(item)" class="dropdown">
+              <summary
+                class="btn btn-ghost btn-sm font-normal"
+                :class="matchesRoute(item) ? 'text-primary' : ''"
+              >{{ textOf(item) }}</summary>
               <ul class="menu dropdown-content bg-base-100 rounded-box shadow-lg border border-base-300 mt-1 z-40 min-w-44">
                 <li v-for="(sub, j) in (item as any).items" :key="j">
                   <a :href="(sub as any).link" :target="(sub as any).target" :rel="(sub as any).rel">
@@ -75,9 +146,21 @@ const mobileOpen = ref(false)
               :href="linkOf(item)"
               :target="(item as any).target"
               :rel="(item as any).rel"
-              class="btn btn-ghost btn-sm font-normal"
+              class="btn btn-ghost btn-sm font-normal gap-1"
+              :class="matchesRoute(item) ? 'text-primary' : ''"
             >
               {{ textOf(item) }}
+              <svg
+                v-if="showExternalIcon(item)"
+                class="w-3 h-3 opacity-60"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                aria-hidden="true"
+              >
+                <path stroke-linecap="round" stroke-linejoin="round" d="M14 4h6v6M10 14L20 4M20 14v6H4V4h6" />
+              </svg>
             </a>
           </template>
         </nav>

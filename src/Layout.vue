@@ -3,6 +3,7 @@ import { computed, watchEffect } from 'vue'
 import { useData } from 'vitepress/client'
 import DocLayout from './layouts/DocLayout.vue'
 import PageLayout from './layouts/PageLayout.vue'
+import HomeLayout from './layouts/HomeLayout.vue'
 import NotFound from './components/NotFound.vue'
 import type { ThemeConfig } from './types'
 
@@ -21,6 +22,7 @@ watchEffect(() => {
 
 <template>
   <NotFound v-if="isNotFound" />
+  <HomeLayout v-else-if="layout === 'home'" />
   <PageLayout v-else-if="layout === 'page'" />
   <DocLayout v-else />
 </template>

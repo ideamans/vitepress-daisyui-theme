@@ -2,6 +2,8 @@ import type { Theme } from 'vitepress/client'
 import Layout from './Layout.vue'
 import Badge from './components/Badge.vue'
 import Callout from './components/Callout.vue'
+import VPHero from './components/VPHero.vue'
+import VPFeatures from './components/VPFeatures.vue'
 import VPTeamPage from './components/VPTeamPage.vue'
 import VPTeamPageTitle from './components/VPTeamPageTitle.vue'
 import VPTeamPageSection from './components/VPTeamPageSection.vue'
@@ -26,6 +28,8 @@ const theme: Theme = {
   enhanceApp({ app, router }) {
     app.component('Badge', Badge)
     app.component('Callout', Callout)
+    app.component('VPHero', VPHero)
+    app.component('VPFeatures', VPFeatures)
     app.component('VPTeamPage', VPTeamPage)
     app.component('VPTeamPageTitle', VPTeamPageTitle)
     app.component('VPTeamPageSection', VPTeamPageSection)

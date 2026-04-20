@@ -29,6 +29,10 @@ export function withTheme(config = {}) {
     vite: {
       ...userVite,
       plugins: [tailwindcss(), ...((userVite.plugins) ?? [])],
+      resolve: {
+        ...(userVite.resolve ?? {}),
+        dedupe: ['vue', 'vitepress', ...((userVite.resolve?.dedupe) ?? [])]
+      },
       build: {
         ...userBuild,
         rollupOptions: {

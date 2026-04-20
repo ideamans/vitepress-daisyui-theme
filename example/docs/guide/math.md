@@ -1,4 +1,10 @@
+---
+outline: false
+---
+
 # Math Equations
+
+This page sets `outline: false` in frontmatter, so the right-hand table of contents is hidden and the article takes the full content width — handy for wide content like equations or tables.
 
 Enable math in `.vitepress/config.ts` with `markdown: { math: true }` and install `markdown-it-mathjax3`. VitePress then renders TeX via MathJax 3. This theme does not interfere with MathJax's own styling.
 
