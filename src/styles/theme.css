@@ -236,10 +236,13 @@ html.dark .shiki span {
   top: 0.5rem;
   right: 0.75rem;
   font-size: 0.7rem;
-  color: color-mix(in oklab, white 50%, transparent);
+  color: color-mix(in oklab, #24292e 55%, transparent);
   text-transform: uppercase;
   letter-spacing: 0.05em;
   font-family: ui-monospace, SFMono-Regular, monospace;
+}
+html.dark .prose div[class*='language-'] > span.lang {
+  color: color-mix(in oklab, white 60%, transparent);
 }
 .prose div[class*='language-'] button.copy {
   position: absolute;
@@ -248,17 +251,26 @@ html.dark .shiki span {
   padding: 0.2rem 0.55rem;
   font-size: 0.7rem;
   border-radius: 0.25rem;
-  background: color-mix(in oklab, white 10%, transparent);
-  color: color-mix(in oklab, white 70%, transparent);
-  border: 1px solid color-mix(in oklab, white 15%, transparent);
+  background: color-mix(in oklab, #24292e 8%, transparent);
+  color: color-mix(in oklab, #24292e 75%, transparent);
+  border: 1px solid color-mix(in oklab, #24292e 20%, transparent);
   cursor: pointer;
   opacity: 0;
   transition: opacity 0.15s, background-color 0.15s, color 0.15s;
   font-family: inherit;
 }
+html.dark .prose div[class*='language-'] button.copy {
+  background: color-mix(in oklab, white 10%, transparent);
+  color: color-mix(in oklab, white 75%, transparent);
+  border-color: color-mix(in oklab, white 18%, transparent);
+}
 .prose div[class*='language-']:hover button.copy,
 .prose div[class*='language-'] button.copy:focus { opacity: 1; }
 .prose div[class*='language-'] button.copy:hover {
+  background: color-mix(in oklab, #24292e 16%, transparent);
+  color: #24292e;
+}
+html.dark .prose div[class*='language-'] button.copy:hover {
   background: color-mix(in oklab, white 20%, transparent);
   color: white;
 }
