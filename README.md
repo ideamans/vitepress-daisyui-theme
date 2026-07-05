@@ -84,6 +84,30 @@ layout: page
 | `doc` (default) | yes | yes | yes | Documentation pages |
 | `page` | yes | no | no | LPs, marketing pages, team, `/about`, legal |
 
+## Custom header / footer
+
+The header and footer are exposed as named slots on the theme's `Layout`, so you can swap in your own components — handy when the docs need to match a separately-built landing page or marketing site. Leave a slot unset and the built-in header/footer render as before. Overrides apply across all three layouts (`doc`, `page`, `home`).
+
+`.vitepress/theme/index.ts`:
+
+```ts
+import { h } from 'vue'
+import Theme from 'vitepress-daisyui-theme'
+import MyHeader from './MyHeader.vue'
+import MyFooter from './MyFooter.vue'
+
+export default {
+  extends: Theme,
+  Layout: () =>
+    h(Theme.Layout, null, {
+      header: () => h(MyHeader),
+      footer: () => h(MyFooter),
+    }),
+}
+```
+
+Pass only the slot you want to replace — e.g. keep the default header and override just the footer by supplying `{ footer: () => h(MyFooter) }`. Slot content still respects the `navbar: false` / `footer: false` frontmatter flags, so a page can hide your custom header/footer the same way it hides the built-in ones.
+
 ## DaisyUI theme switching
 
 `themeConfig.daisyui` chooses the DaisyUI theme names applied to the `<html data-theme>` attribute:

@@ -20,7 +20,7 @@ const pageClass = computed(() => (frontmatter.value.pageClass as string | undefi
     <a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50 btn btn-primary btn-sm">
       {{ theme.skipToContentLabel ?? 'Skip to content' }}
     </a>
-    <Header v-if="showNavbar" />
+    <template v-if="showNavbar"><slot name="header"><Header /></slot></template>
     <main id="main" class="flex-1">
       <VPHero v-if="frontmatter.hero" />
       <VPFeatures v-if="frontmatter.features" />
@@ -28,7 +28,7 @@ const pageClass = computed(() => (frontmatter.value.pageClass as string | undefi
         <Content />
       </div>
     </main>
-    <Footer v-if="showFooter" />
+    <template v-if="showFooter"><slot name="footer"><Footer /></slot></template>
     <BackToTop />
   </div>
 </template>

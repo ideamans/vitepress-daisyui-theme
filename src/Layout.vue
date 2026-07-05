@@ -12,6 +12,12 @@ const { frontmatter, isDark, theme, page } = useData<ThemeConfig>()
 const layout = computed(() => (frontmatter.value.layout as string | undefined) ?? 'doc')
 const isNotFound = computed(() => !!page.value.isNotFound)
 
+const layoutComponent = computed(() => {
+  if (layout.value === 'home') return HomeLayout
+  if (layout.value === 'page') return PageLayout
+  return DocLayout
+})
+
 watchEffect(() => {
   if (typeof document === 'undefined') return
   const light = theme.value.daisyui?.light ?? 'light'
@@ -22,7 +28,9 @@ watchEffect(() => {
 
 <template>
   <NotFound v-if="isNotFound" />
-  <HomeLayout v-else-if="layout === 'home'" />
-  <PageLayout v-else-if="layout === 'page'" />
-  <DocLayout v-else />
+  <component :is="layoutComponent" v-else>
+    <template v-for="(_, name) in $slots" #[name]="slotProps">
+      <slot :name="name" v-bind="slotProps ?? {}" />
+    </template>
+  </component>
 </template>

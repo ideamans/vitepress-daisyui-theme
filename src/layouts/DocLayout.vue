@@ -62,7 +62,7 @@ watchEffect(() => {
     <a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50 btn btn-primary btn-sm">
       {{ theme.skipToContentLabel ?? 'Skip to content' }}
     </a>
-    <Header v-if="showNavbar" />
+    <template v-if="showNavbar"><slot name="header"><Header /></slot></template>
     <LocalNav v-if="hasSidebar || hasAside" @openSidebar="sidebarOpen = true" @openToc="tocOpen = true" />
 
     <div class="flex-1 w-full max-w-[88rem] mx-auto px-4 md:px-6 lg:px-8">
@@ -98,7 +98,7 @@ watchEffect(() => {
       </div>
     </div>
 
-    <Footer v-if="showFooter" />
+    <template v-if="showFooter"><slot name="footer"><Footer /></slot></template>
     <BackToTop />
 
     <Transition
