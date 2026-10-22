@@ -2,9 +2,11 @@
 import { computed } from 'vue'
 import { useRoute } from 'vitepress/client'
 import type { SidebarItem } from '../types'
+import { useLink } from '../composables/useLink'
 
 const props = defineProps<{ item: SidebarItem; depth?: number }>()
 const route = useRoute()
+const { resolve, strip } = useLink()
 
 const depth = computed(() => props.depth ?? 0)
 
@@ -14,14 +16,14 @@ function normalize(p: string): string {
 
 const isActive = computed(() => {
   if (!props.item.link) return false
-  return normalize(route.path) === normalize(props.item.link)
+  return normalize(strip(route.path)) === normalize(strip(props.item.link))
 })
 
 const containsActive = computed(() => {
   const walk = (arr?: SidebarItem[]): boolean => {
     if (!arr) return false
     for (const it of arr) {
-      if (it.link && normalize(route.path) === normalize(it.link)) return true
+      if (it.link && normalize(strip(route.path)) === normalize(strip(it.link))) return true
       if (walk(it.items)) return true
     }
     return false
@@ -52,7 +54,7 @@ const indentPx = computed(() => depth.value * 12)
         <span v-if="item.link === undefined">{{ item.text }}</span>
         <a
           v-else
-          :href="item.link"
+          :href="resolve(item.link)"
           :target="item.target"
           :rel="item.rel"
           class="hover:text-primary"
@@ -87,7 +89,7 @@ const indentPx = computed(() => depth.value * 12)
       >{{ item.text }}</div>
       <a
         v-else-if="item.link"
-        :href="item.link"
+        :href="resolve(item.link)"
         :target="item.target"
         :rel="item.rel"
         class="block py-1 transition-colors"
@@ -109,7 +111,7 @@ const indentPx = computed(() => depth.value * 12)
 
     <a
       v-else-if="item.link"
-      :href="item.link"
+      :href="resolve(item.link)"
       :target="item.target"
       :rel="item.rel"
       class="block py-1.5 -ml-px border-l transition-colors"

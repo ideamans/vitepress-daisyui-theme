@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useData } from 'vitepress/client'
+import { useLink } from '../composables/useLink'
 
 interface HeroAction {
   theme?: 'brand' | 'alt'
@@ -34,6 +35,7 @@ const props = defineProps<{
 }>()
 
 const { frontmatter, isDark } = useData()
+const { resolve } = useLink()
 
 const hero = computed<HeroData>(() => {
   if (props.name || props.text || props.tagline || props.image || props.actions) {
@@ -73,7 +75,7 @@ const imageSrc = computed(() => {
           <a
             v-for="(a, i) in hero.actions"
             :key="i"
-            :href="a.link"
+            :href="resolve(a.link)"
             :target="a.target"
             :rel="a.rel"
             class="btn"

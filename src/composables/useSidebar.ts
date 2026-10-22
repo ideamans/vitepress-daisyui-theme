@@ -1,15 +1,17 @@
 import { computed } from 'vue'
 import { useData, useRoute } from 'vitepress/client'
 import type { SidebarConfig, SidebarItem, SidebarMulti } from '../types'
+import { stripBase } from './useLink'
 
 function isMulti(cfg: SidebarConfig): cfg is SidebarMulti {
   return !Array.isArray(cfg)
 }
 
-function matchByPrefix(path: string, map: SidebarMulti): { items: SidebarItem[]; base?: string } {
+function matchByPrefix(path: string, map: SidebarMulti, siteBase: string): { items: SidebarItem[]; base?: string } {
   const keys = Object.keys(map).sort((a, b) => b.length - a.length)
   for (const k of keys) {
-    if (path.startsWith(k)) {
+    // keys are written without the site base (like the default theme); a key that includes it also matches
+    if (path.startsWith(stripBase(k, siteBase))) {
       const v = map[k]
       if (Array.isArray(v)) return { items: v }
       return { items: v.items, base: v.base }
@@ -31,14 +33,14 @@ function applyBase(items: SidebarItem[], base?: string): SidebarItem[] {
 }
 
 export function useSidebar() {
-  const { theme } = useData()
+  const { theme, site } = useData()
   const route = useRoute()
 
   const items = computed<SidebarItem[]>(() => {
     const cfg = theme.value.sidebar as SidebarConfig | undefined
     if (!cfg) return []
     if (!isMulti(cfg)) return cfg
-    const { items: matched, base } = matchByPrefix(route.path, cfg)
+    const { items: matched, base } = matchByPrefix(stripBase(route.path, site.value.base), cfg, site.value.base)
     return applyBase(matched, base)
   })
 
@@ -62,15 +64,17 @@ function normalize(p: string): string {
 }
 
 export function usePrevNext() {
-  const { frontmatter, theme, page } = useData()
+  const { frontmatter, theme, page, site } = useData()
   const { flat } = useSidebar()
 
   return computed(() => {
     const df = theme.value.docFooter ?? {}
     const showPrev = df.prev !== false
     const showNext = df.next !== false
-    const current = normalize(page.value.relativePath.replace(/\.md$/, ''))
-    const idx = flat.value.findIndex((it) => normalize(it.link || '').replace(/^\//, '') === current || normalize(it.link || '') === '/' + current)
+    // `guide/index.md` is the page at `/guide/`
+    const current = normalize(page.value.relativePath.replace(/(^|\/)index\.md$/, '$1').replace(/\.md$/, ''))
+    const linkPath = (it: SidebarItem) => normalize(stripBase(it.link || '', site.value.base))
+    const idx = flat.value.findIndex((it) => linkPath(it).replace(/^\//, '') === current || linkPath(it) === '/' + current)
     const fmPrev = frontmatter.value.prev
     const fmNext = frontmatter.value.next
     const prevRaw = showPrev ? (idx > 0 ? flat.value[idx - 1] : undefined) : undefined
@@ -96,16 +100,17 @@ export function usePrevNext() {
 
 export function useBreadcrumb() {
   const route = useRoute()
+  const { site } = useData()
   const { items } = useSidebar()
 
   return computed(() => {
     const trail: { text: string; link?: string }[] = []
-    const target = normalize(route.path)
+    const target = normalize(stripBase(route.path, site.value.base))
 
     function walk(arr: SidebarItem[], crumbs: { text: string; link?: string }[]): boolean {
       for (const it of arr) {
         const nextCrumbs = it.text ? [...crumbs, { text: it.text, link: it.link }] : crumbs
-        if (it.link && normalize(it.link) === target) {
+        if (it.link && normalize(stripBase(it.link, site.value.base)) === target) {
           trail.splice(0, trail.length, ...nextCrumbs)
           return true
         }

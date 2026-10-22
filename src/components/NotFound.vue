@@ -15,7 +15,7 @@ const quote = computed(
 )
 const linkLabel = computed(() => cfg.value.linkLabel ?? 'go to home')
 const linkText = computed(() => cfg.value.linkText ?? 'Take me home')
-const home = computed(() => withBase(site.value.base ?? '/'))
+const home = computed(() => withBase('/'))
 </script>
 
 <template>

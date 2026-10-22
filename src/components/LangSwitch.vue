@@ -2,9 +2,11 @@
 import { computed } from 'vue'
 import { useData, useRoute } from 'vitepress/client'
 import type { ThemeConfig } from '../types'
+import { useLink } from '../composables/useLink'
 
 const { site, localeIndex, theme } = useData<ThemeConfig>()
 const route = useRoute()
+const { resolve, strip } = useLink()
 
 interface Entry {
   key: string
@@ -36,17 +38,17 @@ function localeBase(key: string): string {
 }
 
 function hrefFor(target: Entry): string {
-  if (target.link) return target.link
-  if (!i18nRouting.value) return localeBase(target.key)
+  if (target.link) return resolve(target.link)
+  if (!i18nRouting.value) return resolve(localeBase(target.key))
 
   const currentBase = localeBase(localeIndex.value ?? 'root')
   const targetBase = localeBase(target.key)
-  let path = route.path
+  let path = strip(route.path)
   if (path.startsWith(currentBase)) {
     path = path.slice(currentBase.length - 1) // keep leading slash
   }
-  if (path === '/' || path === '') return targetBase
-  return (targetBase.replace(/\/$/, '') + path).replace(/\/+/g, '/')
+  if (path === '/' || path === '') return resolve(targetBase)
+  return resolve((targetBase.replace(/\/$/, '') + path).replace(/\/+/g, '/'))
 }
 </script>
 
