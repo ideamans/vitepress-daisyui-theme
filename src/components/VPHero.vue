@@ -86,7 +86,7 @@ const imageSrc = computed(() => {
         </div>
       </div>
       <div v-if="imageSrc" class="flex justify-center md:justify-end">
-        <img :src="imageSrc.src" :alt="imageSrc.alt" class="max-w-xs w-full h-auto" />
+        <img :src="resolve(imageSrc.src)" :alt="imageSrc.alt" class="max-w-xs w-full h-auto" />
       </div>
     </div>
   </section>

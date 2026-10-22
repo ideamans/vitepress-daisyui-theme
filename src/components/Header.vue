@@ -121,7 +121,7 @@ const mobileOpen = ref(false)
           :target="logoLink.target"
           class="flex items-center gap-2 font-semibold text-base-content hover:opacity-80"
         >
-          <img v-if="logo" :src="logo.src" :alt="logo.alt" class="h-7 w-auto" />
+          <img v-if="logo" :src="resolve(logo.src)" :alt="logo.alt" class="h-7 w-auto" />
           <span v-if="siteTitle">{{ siteTitle }}</span>
         </a>
         <nav class="hidden md:flex items-center gap-1 ml-4">

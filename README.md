@@ -11,7 +11,7 @@ It implements VitePress's `DefaultTheme.Config` surface so existing VitePress do
   - `doc` (default) — header + collapsible sidebar + content + outline + prev/next
   - `page` — header + free-form content + footer (LPs, marketing, legal)
 - **DefaultTheme.Config compatible.** `nav`, `sidebar` (including `SidebarMulti` with `base`), `search`, `locales`, `editLink`, `lastUpdated`, `outline`, `docFooter`, `socialLinks`, `footer`, `externalLinkIcon`, `aside`, `notFound`, `i18nRouting`, label strings — all honored.
-- **Works under a site `base`.** Like the default theme, links in `nav`, `sidebar`, `logoLink`, hero actions and features are written without the base and get it prepended; sidebar keys and active states are matched without it. Links that already include the base are left as is.
+- **Works under a site `base`.** Like the default theme, links in `nav`, `sidebar`, `logoLink`, hero actions and features, and the `logo`, hero `image` and feature `icon` paths, are written without the base and get it prepended; sidebar keys and active states are matched without it. Links that already include the base are left as is.
 - **Full markdown parity with VitePress.**
   - Header anchors (`#` on hover)
   - Fenced code blocks with Shiki dual-theme, copy button, language label

@@ -1,9 +1,10 @@
 import { computed, ref, watch } from 'vue'
-import { useData, withBase } from 'vitepress/client'
+import { useData } from 'vitepress/client'
 import MiniSearch, { type Options as MiniSearchOptions } from 'minisearch'
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore -- virtual module supplied by VitePress when search.provider === 'local'
 import localSearchIndex from '@localSearchIndex'
+import { resolveLink } from './useLink'
 
 export interface SearchResult {
   id: string
@@ -58,7 +59,8 @@ export function useLocalSearch() {
       id: r.id,
       title: r.title,
       titles: Array.isArray(r.titles) ? r.titles : [],
-      link: withBase(r.id.startsWith(base) ? r.id : r.id.replace(/^\//, base)),
+      // VitePress builds the index ids with the base already in them (`/docs/guide/`)
+      link: resolveLink(r.id, base),
       score: r.score
     }))
   }
