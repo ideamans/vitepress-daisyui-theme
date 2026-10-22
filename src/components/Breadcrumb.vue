@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import { useBreadcrumb } from '../composables/useSidebar'
+import { useLink } from '../composables/useLink'
 
 const trail = useBreadcrumb()
+const { resolve } = useLink()
 </script>
 
 <template>
@@ -9,7 +11,7 @@ const trail = useBreadcrumb()
     <template v-for="(crumb, i) in trail" :key="i">
       <a
         v-if="crumb.link && i < trail.length - 1"
-        :href="crumb.link"
+        :href="resolve(crumb.link)"
         class="hover:text-base-content"
       >
         {{ crumb.text }}

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useData } from 'vitepress/client'
+import { useLink } from '../composables/useLink'
 
 interface FeatureIcon {
   src?: string
@@ -24,6 +25,7 @@ interface Feature {
 
 const props = defineProps<{ features?: Feature[] }>()
 const { frontmatter, isDark } = useData()
+const { resolve } = useLink()
 
 const features = computed<Feature[]>(() => props.features ?? (frontmatter.value.features as Feature[]) ?? [])
 
@@ -55,7 +57,7 @@ function resolveObjectIcon(icon: FeatureIcon) {
           :is="f.link ? 'a' : 'div'"
           v-for="(f, i) in features"
           :key="i"
-          :href="f.link"
+          :href="resolve(f.link)"
           :target="f.target"
           :rel="f.rel"
           class="card bg-base-100 border border-base-300 transition-colors"

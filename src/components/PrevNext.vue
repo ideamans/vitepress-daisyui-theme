@@ -1,14 +1,16 @@
 <script setup lang="ts">
 import { usePrevNext } from '../composables/useSidebar'
+import { useLink } from '../composables/useLink'
 
 const pair = usePrevNext()
+const { resolve } = useLink()
 </script>
 
 <template>
   <nav class="grid grid-cols-1 sm:grid-cols-2 gap-4 border-t border-base-300 pt-6">
     <a
       v-if="pair.prev"
-      :href="pair.prev.link"
+      :href="resolve(pair.prev.link)"
       class="group flex flex-col items-start p-4 rounded-lg border border-base-300 hover:border-primary transition-colors"
     >
       <span class="text-xs text-base-content/60">{{ pair.prevLabel ?? 'Previous' }}</span>
@@ -17,7 +19,7 @@ const pair = usePrevNext()
     <div v-else />
     <a
       v-if="pair.next"
-      :href="pair.next.link"
+      :href="resolve(pair.next.link)"
       class="group flex flex-col items-end p-4 rounded-lg border border-base-300 hover:border-primary transition-colors sm:col-start-2"
     >
       <span class="text-xs text-base-content/60">{{ pair.nextLabel ?? 'Next' }}</span>

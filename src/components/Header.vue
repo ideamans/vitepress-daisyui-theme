@@ -6,9 +6,11 @@ import SocialLinks from './SocialLinks.vue'
 import LangSwitch from './LangSwitch.vue'
 import SearchButton from './SearchButton.vue'
 import type { NavItem, ThemeConfig } from '../types'
+import { useLink } from '../composables/useLink'
 
 const { site, theme, isDark } = useData<ThemeConfig>()
 const route = useRoute()
+const { resolve, strip } = useLink()
 
 const siteTitle = computed(() => {
   const t = theme.value.siteTitle
@@ -28,9 +30,9 @@ const logo = computed(() => {
 
 const logoLink = computed(() => {
   const ll = theme.value.logoLink
-  if (!ll) return { href: '/' }
-  if (typeof ll === 'string') return { href: ll }
-  return { href: ll.link ?? '/', rel: ll.rel, target: ll.target }
+  if (!ll) return { href: resolve('/') }
+  if (typeof ll === 'string') return { href: resolve(ll) }
+  return { href: resolve(ll.link ?? '/'), rel: ll.rel, target: ll.target }
 })
 
 function isExternal(url: string): boolean {
@@ -61,6 +63,7 @@ function textOf(item: NavItem): string {
 }
 
 function normalizePath(p: string): string {
+  p = strip(p)
   return p.replace(/\.html$/, '').replace(/index$/, '').replace(/\/$/, '') || '/'
 }
 
@@ -69,7 +72,7 @@ function matchesRoute(item: NavItem): boolean {
   const am = (item as any).activeMatch as string | undefined
   if (am) {
     try {
-      return new RegExp(am).test(route.path)
+      return new RegExp(am).test(strip(route.path))
     } catch {
       return false
     }
@@ -82,7 +85,7 @@ function matchesRoute(item: NavItem): boolean {
     return (item as any).items.some((sub: any) => {
       if (sub.activeMatch) {
         try {
-          return new RegExp(sub.activeMatch).test(route.path)
+          return new RegExp(sub.activeMatch).test(strip(route.path))
         } catch {
           return false
         }
@@ -135,7 +138,7 @@ const mobileOpen = ref(false)
               >{{ textOf(item) }}</summary>
               <ul class="menu dropdown-content bg-base-100 rounded-box shadow-lg border border-base-300 mt-1 z-40 min-w-44">
                 <li v-for="(sub, j) in (item as any).items" :key="j">
-                  <a :href="(sub as any).link" :target="(sub as any).target" :rel="(sub as any).rel">
+                  <a :href="resolve((sub as any).link)" :target="(sub as any).target" :rel="(sub as any).rel">
                     {{ (sub as any).text }}
                   </a>
                 </li>
@@ -143,7 +146,7 @@ const mobileOpen = ref(false)
             </details>
             <a
               v-else-if="linkOf(item)"
-              :href="linkOf(item)"
+              :href="resolve(linkOf(item))"
               :target="(item as any).target"
               :rel="(item as any).rel"
               class="btn btn-ghost btn-sm font-normal gap-1"
@@ -182,13 +185,13 @@ const mobileOpen = ref(false)
               <summary>{{ textOf(item) }}</summary>
               <ul>
                 <li v-for="(sub, j) in (item as any).items" :key="j">
-                  <a :href="(sub as any).link" :target="(sub as any).target">{{ (sub as any).text }}</a>
+                  <a :href="resolve((sub as any).link)" :target="(sub as any).target">{{ (sub as any).text }}</a>
                 </li>
               </ul>
             </details>
           </li>
           <li v-else-if="linkOf(item)">
-            <a :href="linkOf(item)" :target="(item as any).target">{{ textOf(item) }}</a>
+            <a :href="resolve(linkOf(item))" :target="(item as any).target">{{ textOf(item) }}</a>
           </li>
         </template>
       </ul>
