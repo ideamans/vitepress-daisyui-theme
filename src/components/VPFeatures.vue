@@ -68,13 +68,13 @@ function resolveObjectIcon(icon: FeatureIcon) {
               <span v-if="iconKind(f.icon) === 'emoji'">{{ f.icon }}</span>
               <img
                 v-else-if="iconKind(f.icon) === 'image'"
-                :src="(f.icon as string)"
+                :src="resolve(f.icon as string)"
                 alt=""
                 class="h-10 w-auto"
               />
               <img
                 v-else-if="iconKind(f.icon) === 'object'"
-                :src="resolveObjectIcon(f.icon as FeatureIcon).src"
+                :src="resolve(resolveObjectIcon(f.icon as FeatureIcon).src)"
                 :alt="resolveObjectIcon(f.icon as FeatureIcon).alt"
                 :width="resolveObjectIcon(f.icon as FeatureIcon).width"
                 :height="resolveObjectIcon(f.icon as FeatureIcon).height"
