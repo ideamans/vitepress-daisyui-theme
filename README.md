@@ -248,7 +248,7 @@ If you prefer to wire Vite yourself, import `Theme` and `./styles` directly and 
 
 | | |
 | --- | --- |
-| VitePress | `>= 1.0` (1.6 and 2.0-alpha are both in production use) |
+| VitePress | `>= 1.0 || ^2.0.0-alpha.0` (1.6 and 2.0-alpha are both in production use) |
 | Node | `>= 18` |
 | Tailwind CSS | `^4.0` |
 | DaisyUI | `^5.0` |
