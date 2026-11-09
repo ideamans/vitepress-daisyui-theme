@@ -248,11 +248,15 @@ If you prefer to wire Vite yourself, import `Theme` and `./styles` directly and 
 
 | | |
 | --- | --- |
-| VitePress | `>= 1.0` |
+| VitePress | `>= 1.0 || ^2.0.0-alpha.0` (1.6 and 2.0-alpha are both in production use) |
 | Node | `>= 18` |
 | Tailwind CSS | `^4.0` |
 | DaisyUI | `^5.0` |
 | Vue | `^3.3` |
+
+The example site and the CI build use VitePress 2.0-alpha (Vite 8). VitePress 1.x is still
+supported as a peer, but it pins Vite 5.4, which has unpatched advisories — prefer 2.0-alpha
+for new sites. VitePress 2 renders `- [ ]` task lists as checkboxes; 1.x leaves them as text.
 
 ## License
 
