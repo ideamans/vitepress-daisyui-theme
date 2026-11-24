@@ -80,7 +80,8 @@ function resolveObjectIcon(icon: FeatureIcon) {
                 :height="resolveObjectIcon(f.icon as FeatureIcon).height"
               />
             </div>
-            <h3 class="card-title text-lg">{{ f.title }}</h3>
+            <!-- h2: ヒーローの h1 の次の階層。h3 だと見出しの階層が飛ぶ（機械可読性の L2-20） -->
+            <h2 class="card-title text-lg">{{ f.title }}</h2>
             <p v-if="f.details" class="text-base-content/70">{{ f.details }}</p>
             <div v-if="f.link && f.linkText" class="mt-2 text-primary text-sm">{{ f.linkText }} →</div>
           </div>
