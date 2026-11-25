@@ -172,7 +172,7 @@ withTheme({
 })
 ```
 
-The theme adds a `LangSwitch` dropdown in the header; it preserves the current path and swaps the locale prefix. Honors `themeConfig.i18nRouting`.
+The theme adds a `LangSwitch` dropdown in the header; it preserves the current path and swaps the locale prefix. Honors `themeConfig.i18nRouting`. A locale whose `label` is an empty string (for example a `root` that only serves a language-picker page) is left out of the dropdown.
 
 ## Team page
 
