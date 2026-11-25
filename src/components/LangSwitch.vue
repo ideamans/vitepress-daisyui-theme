@@ -18,12 +18,19 @@ interface Entry {
 const locales = computed<Entry[]>(() => {
   const raw = site.value.locales as Record<string, any> | undefined
   if (!raw) return []
-  return Object.entries(raw).map(([key, v]) => ({
-    key,
-    label: v.label ?? key,
-    lang: v.lang,
-    link: v.link
-  }))
+  return (
+    Object.entries(raw)
+      .map(([key, v]) => ({
+        key,
+        label: v.label ?? key,
+        lang: v.lang,
+        link: v.link
+      }))
+      // A locale with an empty label (e.g. a root that is only a language-picker page)
+      // is not a language: listing it renders a blank menu item and links every page
+      // to that page, which search engines then report as a redirect.
+      .filter((l) => l.label !== '')
+  )
 })
 
 const visible = computed(() => locales.value.length > 1)
